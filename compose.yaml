@@ -1,0 +1,44 @@
+services:
+  mongodb:
+    image: mongo:7
+    container_name: securecare-mongodb
+    restart: unless-stopped
+    volumes: ["securecare_mongo:/data/db"]
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      network: host
+    container_name: securecare-api
+    restart: unless-stopped
+    environment:
+      SERVER_PORT: 8080
+      MONGODB_URI: mongodb://mongodb:27017/securecare
+      JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET in .env}
+      JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS:-900000}
+      FRONTEND_ORIGIN: http://localhost:5500
+      APP_ADMIN_USERNAME: ${APP_ADMIN_USERNAME:?Set APP_ADMIN_USERNAME in .env}
+      APP_ADMIN_PASSWORD: ${APP_ADMIN_PASSWORD:?Set APP_ADMIN_PASSWORD in .env}
+      APP_ADMIN_EMAIL: ${APP_ADMIN_EMAIL:-admin@example.test}
+    ports: ["8080:8080"]
+    depends_on:
+      mongodb:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: securecare-web
+    restart: unless-stopped
+    ports: ["5500:80"]
+    depends_on: [backend]
+
+volumes:
+  securecare_mongo:

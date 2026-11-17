@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: securecare
+
+  mongodb:
+    uri: ${MONGODB_URI:mongodb://localhost:27017/securecare}
+
+  data:
+    mongodb:
+      auto-index-creation: true
+
+  jackson:
+    default-property-inclusion: non_null
+
+server:
+  port: ${SERVER_PORT:8080}
+  error:
+    include-message: never
+
+app:
+  cors:
+    allowed-origin: ${FRONTEND_ORIGIN:http://localhost:5500}
+  jwt:
+    secret: ${JWT_SECRET}
+    expiration-ms: ${JWT_EXPIRATION_MS:900000}
+
+logging:
+  level:
+    root: INFO
+    com.securecare: INFO

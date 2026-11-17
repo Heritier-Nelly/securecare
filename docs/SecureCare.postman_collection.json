@@ -1,0 +1,688 @@
+{
+  "info": {
+    "name": "SecureCare API",
+    "description": "SecureCare REST API. Run Login first; it stores the JWT in the Postman environment variable token.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080/api"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "username",
+      "value": "admin"
+    },
+    {
+      "key": "password",
+      "value": "CHANGE_ME"
+    },
+    {
+      "key": "recordId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/health"
+      }
+    },
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"username\":\"{{username}}\",\"password\":\"{{password}}\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{baseUrl}}/auth/login"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "if (pm.response.code === 200) { pm.environment.set(\"token\", pm.response.json().token); }"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/dashboard"
+      }
+    },
+    {
+      "name": "patients \u2014 List",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/patients"
+      }
+    },
+    {
+      "name": "patients \u2014 Create",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{baseUrl}}/patients"
+      }
+    },
+    {
+      "name": "patients \u2014 Get by ID",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/patients/{{recordId}}"
+      }
+    },
+    {
+      "name": "patients \u2014 Update",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{baseUrl}}/patients/{{recordId}}"
+      }
+    },
+    {
+      "name": "patients \u2014 Delete",
+      "request": {
+        "method": "DELETE",
+        "url": "{{baseUrl}}/patients/{{recordId}}"
+      }
+    },
+    {
+      "name": "doctors \u2014 List",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/doctors"
+      }
+    },
+    {
+      "name": "doctors \u2014 Create",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{baseUrl}}/doctors"
+      }
+    },
+    {
+      "name": "doctors \u2014 Get by ID",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/doctors/{{recordId}}"
+      }
+    },
+    {
+      "name": "doctors \u2014 Update",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{baseUrl}}/doctors/{{recordId}}"
+      }
+    },
+    {
+      "name": "doctors \u2014 Delete",
+      "request": {
+        "method": "DELETE",
+        "url": "{{baseUrl}}/doctors/{{recordId}}"
+      }
+    },
+    {
+      "name": "appointments \u2014 List",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/appointments"
+      }
+    },
+    {
+      "name": "appointments \u2014 Create",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{baseUrl}}/appointments"
+      }
+    },
+    {
+      "name": "appointments \u2014 Get by ID",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/appointments/{{recordId}}"
+      }
+    },
+    {
+      "name": "appointments \u2014 Update",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{baseUrl}}/appointments/{{recordId}}"
+      }
+    },
+    {
+      "name": "appointments \u2014 Delete",
+      "request": {
+        "method": "DELETE",
+        "url": "{{baseUrl}}/appointments/{{recordId}}"
+      }
+    },
+    {
+      "name": "prescriptions \u2014 List",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/prescriptions"
+      }
+    },
+    {
+      "name": "prescriptions \u2014 Create",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{baseUrl}}/prescriptions"
+      }
+    },
+    {
+      "name": "prescriptions \u2014 Get by ID",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/prescriptions/{{recordId}}"
+      }
+    },
+    {
+      "name": "prescriptions \u2014 Update",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{baseUrl}}/prescriptions/{{recordId}}"
+      }
+    },
+    {
+      "name": "prescriptions \u2014 Delete",
+      "request": {
+        "method": "DELETE",
+        "url": "{{baseUrl}}/prescriptions/{{recordId}}"
+      }
+    },
+    {
+      "name": "medical-records \u2014 List",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/medical-records"
+      }
+    },
+    {
+      "name": "medical-records \u2014 Create",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{baseUrl}}/medical-records"
+      }
+    },
+    {
+      "name": "medical-records \u2014 Get by ID",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/medical-records/{{recordId}}"
+      }
+    },
+    {
+      "name": "medical-records \u2014 Update",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{baseUrl}}/medical-records/{{recordId}}"
+      }
+    },
+    {
+      "name": "medical-records \u2014 Delete",
+      "request": {
+        "method": "DELETE",
+        "url": "{{baseUrl}}/medical-records/{{recordId}}"
+      }
+    },
+    {
+      "name": "wards \u2014 List",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/wards"
+      }
+    },
+    {
+      "name": "wards \u2014 Create",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{baseUrl}}/wards"
+      }
+    },
+    {
+      "name": "wards \u2014 Get by ID",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/wards/{{recordId}}"
+      }
+    },
+    {
+      "name": "wards \u2014 Update",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{baseUrl}}/wards/{{recordId}}"
+      }
+    },
+    {
+      "name": "wards \u2014 Delete",
+      "request": {
+        "method": "DELETE",
+        "url": "{{baseUrl}}/wards/{{recordId}}"
+      }
+    },
+    {
+      "name": "admissions \u2014 List",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/admissions"
+      }
+    },
+    {
+      "name": "admissions \u2014 Create",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{baseUrl}}/admissions"
+      }
+    },
+    {
+      "name": "admissions \u2014 Get by ID",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/admissions/{{recordId}}"
+      }
+    },
+    {
+      "name": "admissions \u2014 Update",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{baseUrl}}/admissions/{{recordId}}"
+      }
+    },
+    {
+      "name": "admissions \u2014 Delete",
+      "request": {
+        "method": "DELETE",
+        "url": "{{baseUrl}}/admissions/{{recordId}}"
+      }
+    },
+    {
+      "name": "billing \u2014 List",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/billing"
+      }
+    },
+    {
+      "name": "billing \u2014 Create",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{baseUrl}}/billing"
+      }
+    },
+    {
+      "name": "billing \u2014 Get by ID",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/billing/{{recordId}}"
+      }
+    },
+    {
+      "name": "billing \u2014 Update",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{baseUrl}}/billing/{{recordId}}"
+      }
+    },
+    {
+      "name": "billing \u2014 Delete",
+      "request": {
+        "method": "DELETE",
+        "url": "{{baseUrl}}/billing/{{recordId}}"
+      }
+    },
+    {
+      "name": "Audit logs (ADMIN)",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/audit-logs"
+      }
+    },
+    {
+      "name": "Users (ADMIN)",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/users"
+      }
+    },
+    {
+      "name": "Create user (ADMIN)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"username\":\"new-user\",\"password\":\"ChangeThisPassword123!\",\"role\":\"DOCTOR\",\"email\":\"doctor@example.test\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{baseUrl}}/users"
+      }
+    },
+    {
+      "name": "Appointment price strategy",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"durationMinutes\":60}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{baseUrl}}/pricing/appointment"
+      }
+    },
+    {
+      "name": "Activate/deactivate user (ADMIN)",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"active\":false}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{baseUrl}}/users/{{recordId}}/active"
+      }
+    }
+  ]
+}

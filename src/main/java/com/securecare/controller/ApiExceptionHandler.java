@@ -1,0 +1,11 @@
+package com.securecare.controller;
+import jakarta.servlet.http.HttpServletRequest;import org.springframework.http.*;import org.springframework.web.bind.MethodArgumentNotValidException;import org.springframework.web.bind.annotation.*;import org.springframework.web.server.ResponseStatusException;import java.time.Instant;import java.util.*;
+@RestControllerAdvice public class ApiExceptionHandler{
+ @ExceptionHandler(AuthController.LoginRateLimitException.class) ResponseEntity<Map<String,Object>> limited(AuthController.LoginRateLimitException e,HttpServletRequest r){return response(HttpStatus.TOO_MANY_REQUESTS,"RATE_LIMITED",e.getMessage(),r);}
+ @ExceptionHandler(org.springframework.http.converter.HttpMessageNotReadableException.class) ResponseEntity<Map<String,Object>> unreadable(Exception e,HttpServletRequest r){return response(HttpStatus.BAD_REQUEST,"INVALID_JSON","Request body is not valid JSON",r);}
+ @ExceptionHandler(IllegalArgumentException.class) ResponseEntity<Map<String,Object>> bad(IllegalArgumentException e,HttpServletRequest r){return response(HttpStatus.UNAUTHORIZED,"AUTHENTICATION_FAILED",e.getMessage(),r);}
+ @ExceptionHandler(ResponseStatusException.class) ResponseEntity<Map<String,Object>> status(ResponseStatusException e,HttpServletRequest r){return response(HttpStatus.valueOf(e.getStatusCode().value()),"REQUEST_FAILED",e.getReason(),r);}
+ @ExceptionHandler(MethodArgumentNotValidException.class) ResponseEntity<Map<String,Object>> validation(MethodArgumentNotValidException e,HttpServletRequest r){String msg=e.getBindingResult().getFieldErrors().stream().map(x->x.getField()+": "+x.getDefaultMessage()).findFirst().orElse("Invalid request");return response(HttpStatus.BAD_REQUEST,"VALIDATION_FAILED",msg,r);}
+ @ExceptionHandler(Exception.class) ResponseEntity<Map<String,Object>> other(Exception e,HttpServletRequest r){return response(HttpStatus.INTERNAL_SERVER_ERROR,"INTERNAL_ERROR","An unexpected error occurred",r);}
+ private ResponseEntity<Map<String,Object>> response(HttpStatus s,String code,String message,HttpServletRequest r){return ResponseEntity.status(s).body(Map.of("code",code,"message",message==null?s.getReasonPhrase():message,"timestamp",Instant.now().toString(),"path",r.getRequestURI()));}
+}
