@@ -96,7 +96,10 @@ public class AuthService {
                     resetToken, expiry);
             users.save(updated);
 
-            System.out.println(PASSWORD_RESET_URL + resetToken);
+            System.err.println("======================================================");
+            System.err.println("PASSWORD RESET LINK FOR: " + user.email());
+            System.err.println(PASSWORD_RESET_URL + resetToken);
+            System.err.println("======================================================");
         });
     }
 
