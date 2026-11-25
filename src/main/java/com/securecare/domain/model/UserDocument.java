@@ -17,7 +17,24 @@ public record UserDocument(
         Instant createdAt,
         Instant lastLoginAt,
         String staffId,
-        String patientId) {
+        String patientId,
+        String resetToken,
+        Instant resetTokenExpiry) {
+    public UserDocument(
+            String id,
+            String username,
+            String passwordHash,
+            UserRole role,
+            String email,
+            boolean active,
+            Instant createdAt,
+            Instant lastLoginAt,
+            String staffId,
+            String patientId) {
+        this(id, username, passwordHash, role, email, active, createdAt, lastLoginAt,
+                staffId, patientId, null, null);
+    }
+
     public UserDocument(
             String id,
             String username,
@@ -27,6 +44,7 @@ public record UserDocument(
             boolean active,
             Instant createdAt,
             Instant lastLoginAt) {
-        this(id, username, passwordHash, role, email, active, createdAt, lastLoginAt, null, null);
+        this(id, username, passwordHash, role, email, active, createdAt, lastLoginAt,
+                null, null, null, null);
     }
 }

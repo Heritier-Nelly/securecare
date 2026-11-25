@@ -104,3 +104,70 @@ function openModal(resource,row=null){
 }
 $('#modal').addEventListener('click',e=>{if(e.target.dataset.close)$('#modal').classList.add('hidden')});$('#record-form').addEventListener('submit',async e=>{e.preventDefault();const form=e.currentTarget,resource=form.dataset.resource,body={};new FormData(form).forEach((v,k)=>{let value=v;if(resource==='users'&&k==='active')value=v==='true';if(k==='allergies'||k==='symptoms')value=v.split(',').map(x=>x.trim()).filter(Boolean);if(k==='medications'||k==='vitals'||k==='items'||k==='contact'||k==='emergencyContact'||k==='medicalHistory'||k==='availableHours'||k==='beds'){try{value=JSON.parse(v)}catch{}}if(k==='durationMinutes'||k==='capacity'||k==='currentOccupancy'||k==='totalAmount')value=Number(v);if(k==='scheduledAt'||k==='visitDate'||k==='admittedAt'||k==='dischargedAt')value=new Date(v).toISOString();setValue(body,k,value)});try{if(resource==='users'){const editing=Boolean(form.dataset.id);if(editing)delete body.username;await api(editing?`/users/${form.dataset.id}`:'/users',{method:editing?'PATCH':'POST',body:JSON.stringify(body)})}else if(form.dataset.id)await api(`/${resource}/${form.dataset.id}`,{method:'PUT',body:JSON.stringify(body)});else await api('/'+resource,{method:'POST',body:JSON.stringify(body)});$('#modal').classList.add('hidden');toast(resource==='users'?'User saved successfully':'Record saved successfully');loadResource(resource)}catch(err){toast(err.message,true)}});
 $('#logout').addEventListener('click',showLogin);if(token&&currentUser)startApp();else showLogin();
+
+let passwordResetToken = null;
+
+$('#forgot-password-link').addEventListener('click', event => {
+    event.preventDefault();
+    $('#forgot-password-error').textContent = '';
+    $('#forgot-password-modal').classList.remove('hidden');
+    $('#forgot-password-email').focus();
+});
+
+document.querySelectorAll('[data-reset-close="true"]').forEach(element => {
+    element.addEventListener('click', () => {
+        $('#forgot-password-modal').classList.add('hidden');
+        $('#reset-password-modal').classList.add('hidden');
+    });
+});
+
+$('#forgot-password-form').addEventListener('submit', async event => {
+    event.preventDefault();
+    const email = $('#forgot-password-email').value.trim();
+    const error = $('#forgot-password-error');
+    error.textContent = '';
+
+    try {
+        const result = await api('/auth/forgot-password', {
+            method: 'POST',
+            body: JSON.stringify({ email })
+        });
+        $('#forgot-password-modal').classList.add('hidden');
+        $('#forgot-password-form').reset();
+        toast(result.message);
+    } catch (requestError) {
+        error.textContent = requestError.message;
+    }
+});
+
+$('#reset-password-form').addEventListener('submit', async event => {
+    event.preventDefault();
+    const newPassword = $('#reset-password-new').value;
+    const error = $('#reset-password-error');
+    error.textContent = '';
+
+    try {
+        const result = await api('/auth/reset-password', {
+            method: 'POST',
+            body: JSON.stringify({ token: passwordResetToken, newPassword })
+        });
+        $('#reset-password-modal').classList.add('hidden');
+        $('#reset-password-form').reset();
+        passwordResetToken = null;
+        showLogin();
+        toast(result.message);
+    } catch (requestError) {
+        error.textContent = requestError.message;
+    }
+});
+
+const resetTokenFromUrl = new URLSearchParams(window.location.search).get('token');
+if (resetTokenFromUrl) {
+    passwordResetToken = resetTokenFromUrl;
+    $('#reset-password-modal').classList.remove('hidden');
+    $('#reset-password-new').focus();
+
+    const cleanUrl = new URL(window.location.href);
+    cleanUrl.searchParams.delete('token');
+    window.history.replaceState({}, document.title, cleanUrl.toString());
+}

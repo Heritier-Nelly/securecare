@@ -92,7 +92,9 @@ public class UserAdminController {
                 Instant.now(),
                 null,
                 blankToNull(body.staffId()),
-                blankToNull(body.patientId())));
+                blankToNull(body.patientId()),
+                null,
+                null));
         audit.record("CREATE_USER", "users", user.id(),
                 Map.of("username", user.username(), "role", user.role().name()), request);
         return safe(user);
@@ -159,7 +161,8 @@ public class UserAdminController {
 
         UserDocument saved = users.save(new UserDocument(
                 user.id(), user.username(), user.passwordHash(), role, email, active,
-                user.createdAt(), user.lastLoginAt(), staffId, user.patientId()));
+            user.createdAt(), user.lastLoginAt(), staffId, user.patientId(),
+            user.resetToken(), user.resetTokenExpiry()));
         audit.record("UPDATE_USER", "users", id,
                 Map.of("role", saved.role().name(), "active", saved.active(), "staffId", saved.staffId() != null ? saved.staffId() : ""), request);
         return UserDto.from(saved);
@@ -197,7 +200,8 @@ public class UserAdminController {
 
         UserDocument changed = new UserDocument(
                 user.id(), user.username(), user.passwordHash(), user.role(), user.email(), body.get("active"),
-                user.createdAt(), user.lastLoginAt(), user.staffId(), user.patientId());
+            user.createdAt(), user.lastLoginAt(), user.staffId(), user.patientId(),
+            user.resetToken(), user.resetTokenExpiry());
         UserDocument saved = users.save(changed);
         audit.record("UPDATE_USER", "users", id, Map.of("active", saved.active()), request);
         return safe(saved);
@@ -224,7 +228,8 @@ public class UserAdminController {
 
         UserDocument changed = new UserDocument(
                 user.id(), user.username(), user.passwordHash(), user.role(), user.email(), user.active(),
-                user.createdAt(), user.lastLoginAt(), blankToNull(staffId), blankToNull(patientId));
+            user.createdAt(), user.lastLoginAt(), blankToNull(staffId), blankToNull(patientId),
+            user.resetToken(), user.resetTokenExpiry());
         UserDocument saved = users.save(changed);
         Map<String, Object> details = new LinkedHashMap<>();
         details.put("staffId", saved.staffId());
@@ -270,7 +275,9 @@ public class UserAdminController {
                 user.createdAt(),
                 user.lastLoginAt(),
                 staffId,
-                patientId);
+                patientId,
+                user.resetToken(),
+                user.resetTokenExpiry());
         UserDocument saved = users.save(changed);
         Map<String, Object> details = new LinkedHashMap<>();
         details.put("role", saved.role().name());
@@ -292,7 +299,8 @@ public class UserAdminController {
         ensureNotLastActiveAdmin(user, user.role(), false);
         UserDocument saved = users.save(new UserDocument(
                 user.id(), user.username(), user.passwordHash(), user.role(), user.email(), false,
-                user.createdAt(), user.lastLoginAt(), user.staffId(), user.patientId()));
+            user.createdAt(), user.lastLoginAt(), user.staffId(), user.patientId(),
+            user.resetToken(), user.resetTokenExpiry()));
         audit.record("DEACTIVATE_USER", "users", id, Map.of("active", false), request);
         return saved;
     }

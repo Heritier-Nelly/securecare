@@ -31,5 +31,13 @@ public class AuthController {
             throw new IllegalArgumentException("Invalid role or registration data: " + ex.getMessage());
         }
     }
+    @PostMapping("/forgot-password") public Map<String,Object> forgotPassword(@RequestBody Map<String,String> body){
+        auth.requestPasswordReset(body.get("email"));
+        return Map.of("message", "If an account exists for that email, a reset link has been generated.");
+    }
+    @PostMapping("/reset-password") public Map<String,Object> resetPassword(@RequestBody Map<String,String> body){
+        auth.resetPassword(body.get("token"), body.get("newPassword"));
+        return Map.of("message", "Password reset successfully. You can now sign in.");
+    }
     @ResponseStatus(HttpStatus.TOO_MANY_REQUESTS) static class LoginRateLimitException extends RuntimeException { LoginRateLimitException(){super("Too many login attempts. Try again in one minute.");} }
 }

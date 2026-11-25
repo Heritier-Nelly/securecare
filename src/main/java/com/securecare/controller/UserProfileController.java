@@ -66,7 +66,8 @@ public class UserProfileController {
                 ? user.passwordHash()
                 : encoder.encode(body.newPassword());
         UserDocument updated = users.save(new UserDocument(
-                user.id(), body.username(), passwordHash, user.role(), body.email(), user.active(), user.createdAt(), user.lastLoginAt(), user.staffId(), user.patientId()));
+            user.id(), body.username(), passwordHash, user.role(), body.email(), user.active(), user.createdAt(), user.lastLoginAt(), user.staffId(), user.patientId(),
+            user.resetToken(), user.resetTokenExpiry()));
         audit.record("UPDATE_PROFILE", "users", user.id(), Map.of("username", updated.username(), "email", updated.email()), request);
         return safe(updated);
     }
@@ -87,7 +88,9 @@ public class UserProfileController {
                 user.createdAt(),
                 user.lastLoginAt(),
                 user.staffId(),
-                user.patientId()
+                user.patientId(),
+                user.resetToken(),
+                user.resetTokenExpiry()
         );
         users.save(updated);
         audit.record("UPDATE_PASSWORD","users",user.id(),Map.of("username",user.username()),request);
